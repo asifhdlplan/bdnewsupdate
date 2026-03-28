@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BD Daily News</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .news {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+    a {
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🇧🇩 Bangladesh Daily News</h1>
+
+<div id="news">Loading news...</div>
+
+<script>
+const API_KEY = "YOUR_API_KEY";
+
+async function getNews() {
+  const url = `https://newsapi.org/v2/top-headlines?country=bd&apiKey=${API_KEY}`;
+  
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const container = document.getElementById("news");
+  container.innerHTML = "";
+
+  data.articles.forEach(n => {
+    const div = document.createElement("div");
+    div.className = "news";
+    div.innerHTML = `
+      <h3>${n.title}</h3>
+      <p>${n.description || ""}</p>
+      <a href="${n.url}" target="_blank">Read more</a>
+    `;
+    container.appendChild(div);
+  });
+}
+
+getNews();
+</script>
+
+</body>
+</html>
