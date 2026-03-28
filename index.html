@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <title>BD News Premium</title>
+  <meta charset="UTF-8">
+  <title>বাংলাদেশ নিউজ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
+      font-family: 'Noto Sans Bengali', Arial, sans-serif;
       background: #0f172a;
       color: white;
     }
 
     header {
-      padding: 20px;
       text-align: center;
-      font-size: 28px;
+      padding: 20px;
+      font-size: 26px;
       font-weight: bold;
       background: #020617;
     }
@@ -40,21 +41,31 @@
     }
 
     .news-container {
-      padding: 20px;
+      padding: 15px;
       max-width: 900px;
       margin: auto;
     }
 
     .card {
       background: #1e293b;
-      padding: 15px;
       margin-bottom: 15px;
       border-radius: 12px;
+      overflow: hidden;
       transition: 0.3s;
     }
 
     .card:hover {
       transform: scale(1.02);
+    }
+
+    img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .content {
+      padding: 15px;
     }
 
     a {
@@ -71,28 +82,26 @@
 
 <body>
 
-<header>🇧🇩 BD Premium News</header>
+<header>🇧🇩 বাংলাদেশ লাইভ নিউজ</header>
 
 <div class="tabs">
-  <div class="tab" onclick="loadNews('top')">Top</div>
-  <div class="tab" onclick="loadNews('sports')">Sports</div>
-  <div class="tab" onclick="loadNews('business')">Business</div>
-  <div class="tab" onclick="loadNews('technology')">Tech</div>
+  <div class="tab" onclick="loadNews('top')">সর্বশেষ</div>
+  <div class="tab" onclick="loadNews('sports')">খেলা</div>
+  <div class="tab" onclick="loadNews('national')">জাতীয়</div>
 </div>
 
-<div class="news-container" id="news">Loading...</div>
+<div class="news-container" id="news">লোড হচ্ছে...</div>
 
 <script>
 const feeds = {
-  top: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/asia/rss.xml",
-  sports: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/sport/rss.xml",
-  business: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/business/rss.xml",
-  technology: "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/technology/rss.xml"
+  top: "https://api.rss2json.com/v1/api.json?rss_url=https://www.prothomalo.com/feed/",
+  sports: "https://api.rss2json.com/v1/api.json?rss_url=https://www.prothomalo.com/sports/feed/",
+  national: "https://api.rss2json.com/v1/api.json?rss_url=https://www.prothomalo.com/bangladesh/feed/"
 };
 
 async function loadNews(type) {
   const container = document.getElementById("news");
-  container.innerHTML = "Loading...";
+  container.innerHTML = "লোড হচ্ছে...";
 
   const res = await fetch(feeds[type]);
   const data = await res.json();
@@ -100,15 +109,26 @@ async function loadNews(type) {
   container.innerHTML = "";
 
   data.items.slice(0, 10).forEach(n => {
+
+    // Try to extract image
+    let img = "";
+    if (n.thumbnail) {
+      img = n.thumbnail;
+    } else if (n.enclosure && n.enclosure.link) {
+      img = n.enclosure.link;
+    }
+
     const div = document.createElement("div");
     div.className = "card";
 
     div.innerHTML = `
-      <h3>${n.title}</h3>
-      <p>${n.description.substring(0, 120)}...</p>
-      <div class="time">${new Date(n.pubDate).toLocaleString()}</div>
-      <br>
-      <a href="${n.link}" target="_blank">Read full news</a>
+      ${img ? `<img src="${img}">` : ""}
+      <div class="content">
+        <h3>${n.title}</h3>
+        <div class="time">${new Date(n.pubDate).toLocaleString('bn-BD')}</div>
+        <br>
+        <a href="${n.link}" target="_blank">সম্পূর্ণ পড়ুন</a>
+      </div>
     `;
 
     container.appendChild(div);
