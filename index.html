@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>বাংলাদেশ নিউজ</title>
+  <title>বাংলাদেশ লাইভ নিউজ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -15,10 +15,30 @@
 
     header {
       text-align: center;
-      padding: 20px;
-      font-size: 26px;
-      font-weight: bold;
+      padding: 25px 15px;
       background: #020617;
+    }
+
+    header h1 {
+      font-size: 48px;
+      margin: 0;
+    }
+
+    .creator {
+      margin-top: 10px;
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    .social {
+      margin-top: 10px;
+    }
+
+    .social a {
+      margin: 0 10px;
+      font-size: 20px;
+      text-decoration: none;
+      color: #38bdf8;
     }
 
     .tabs {
@@ -77,12 +97,30 @@
       font-size: 12px;
       opacity: 0.7;
     }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      background: #020617;
+      margin-top: 20px;
+      opacity: 0.8;
+    }
   </style>
 </head>
 
 <body>
 
-<header>🇧🇩 বাংলাদেশ লাইভ নিউজ</header>
+<header>
+  <h1>বাংলাদেশ লাইভ নিউজ</h1>
+  <div class="creator">Created by Md. Asif Jahan</div>
+
+  <div class="social">
+    <a href="https://facebook.com/" target="_blank">📘</a>
+    <a href="https://instagram.com/" target="_blank">📸</a>
+    <a href="https://x.com/" target="_blank">🐦</a>
+  </div>
+</header>
 
 <div class="tabs">
   <div class="tab" onclick="loadNews('top')">সর্বশেষ</div>
@@ -91,6 +129,10 @@
 </div>
 
 <div class="news-container" id="news">লোড হচ্ছে...</div>
+
+<footer>
+  © 2026 Md. Asif Jahan - All Rights Reserved
+</footer>
 
 <script>
 const feeds = {
@@ -110,7 +152,6 @@ async function loadNews(type) {
 
   data.items.slice(0, 10).forEach(n => {
 
-    // Try to extract image
     let img = "";
     if (n.thumbnail) {
       img = n.thumbnail;
