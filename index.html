@@ -31,14 +31,29 @@
     }
 
     .social {
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .social a {
       margin: 0 10px;
-      font-size: 20px;
-      text-decoration: none;
-      color: #38bdf8;
+      display: inline-block;
+    }
+
+    .social img {
+      width: 22px;
+      filter: invert(1);
+      transition: 0.3s;
+    }
+
+    .social img:hover {
+      transform: scale(1.2);
+    }
+
+    .update-time {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.7;
     }
 
     .tabs {
@@ -60,6 +75,23 @@
       background: #334155;
     }
 
+    .breaking {
+      max-width: 900px;
+      margin: auto;
+      padding: 10px;
+    }
+
+    .breaking h2 {
+      color: #f43f5e;
+    }
+
+    .breaking-item {
+      background: #7f1d1d;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+    }
+
     .news-container {
       padding: 15px;
       max-width: 900px;
@@ -78,7 +110,7 @@
       transform: scale(1.02);
     }
 
-    img {
+    img.news-img {
       width: 100%;
       height: 200px;
       object-fit: cover;
@@ -116,17 +148,29 @@
   <div class="creator">Created by Md. Asif Jahan</div>
 
   <div class="social">
-    <a href="https://facebook.com/" target="_blank">📘</a>
-    <a href="https://instagram.com/" target="_blank">📸</a>
-    <a href="https://x.com/" target="_blank">🐦</a>
+    <a href="https://facebook.com/asif.j30" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg">
+    </a>
+
+    <a href="https://instagram.com/resetasif" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg">
+    </a>
+
+    <a href="https://x.com/asifonwork" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg">
+    </a>
   </div>
 </header>
+
+<div class="update-time" id="updateTime"></div>
 
 <div class="tabs">
   <div class="tab" onclick="loadNews('top')">সর্বশেষ</div>
   <div class="tab" onclick="loadNews('sports')">খেলা</div>
   <div class="tab" onclick="loadNews('national')">জাতীয়</div>
 </div>
+
+<div class="breaking" id="breaking"></div>
 
 <div class="news-container" id="news">লোড হচ্ছে...</div>
 
@@ -143,13 +187,31 @@ const feeds = {
 
 async function loadNews(type) {
   const container = document.getElementById("news");
+  const breakingBox = document.getElementById("breaking");
+
   container.innerHTML = "লোড হচ্ছে...";
+  breakingBox.innerHTML = "";
 
   const res = await fetch(feeds[type]);
   const data = await res.json();
 
+  const now = new Date();
+  document.getElementById("updateTime").innerText =
+    "সর্বশেষ আপডেট: " + now.toLocaleString('bn-BD');
+
   container.innerHTML = "";
 
+  // Breaking news
+  breakingBox.innerHTML = "<h2>🔴 ব্রেকিং নিউজ</h2>";
+
+  data.items.slice(0, 3).forEach(n => {
+    const div = document.createElement("div");
+    div.className = "breaking-item";
+    div.innerHTML = `<a href="${n.link}" target="_blank">${n.title}</a>`;
+    breakingBox.appendChild(div);
+  });
+
+  // All news
   data.items.slice(0, 10).forEach(n => {
 
     let img = "";
@@ -163,7 +225,7 @@ async function loadNews(type) {
     div.className = "card";
 
     div.innerHTML = `
-      ${img ? `<img src="${img}">` : ""}
+      ${img ? `<img class="news-img" src="${img}">` : ""}
       <div class="content">
         <h3>${n.title}</h3>
         <div class="time">${new Date(n.pubDate).toLocaleString('bn-BD')}</div>
@@ -175,6 +237,11 @@ async function loadNews(type) {
     container.appendChild(div);
   });
 }
+
+// Auto refresh every 10 minutes
+setInterval(() => {
+  loadNews('top');
+}, 600000);
 
 loadNews('top');
 </script>
